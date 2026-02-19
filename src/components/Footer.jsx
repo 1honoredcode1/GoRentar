@@ -5,7 +5,10 @@ const Footer = () => {
     <div className="px-6 md:px-16 lg:px-24 xl:px-32 mt-60 text-sm text-gray-500 ">
       <div className="flex flex-wrap justify-between items-start gap-8 pb-6 border-borderColor border-b">
         <div>
-          <img src={assets.logo} alt="logo" className=" h-8 md:h-9" />
+          <div className="flex items-center">
+            <img src={assets.logo} alt="logo" className="h-8" />
+            <h1 className="text-xl font-semibold">oRentar</h1>
+          </div>
           <p className="max-w-80 mt-3">
             Discover unique stays and unforgettable experiences with our
             platform. Book your next adventure today!
@@ -44,7 +47,7 @@ const Footer = () => {
 
         <div>
           <h2 className="text-base font-medium text-gray-800 uppercase">
-            Rentar
+            GoRentar
           </h2>
           <ul className="mt-3 flex flex-col gap-1.5">
             <li>
@@ -88,13 +91,13 @@ const Footer = () => {
             <li>1234 Address</li>
             <li>Norway, Oslo</li>
             <li>+47 123 45 678</li>
-            <li>rentar@gmail.com</li>
+            <li>gorentar@gmail.com</li>
           </ul>
         </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-2 items-center justify-between py-5">
-        <p>© {new Date().getFullYear()} Rentar. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} GORentar. All rights reserved.</p>
         <ul className="flex gap-4 items-center">
           <li>
             <a href="#">Privacy </a>
