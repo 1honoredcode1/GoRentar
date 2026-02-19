@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import { assets, dummyCarData } from "../../assets/assets";
 
-import CarCard from "./CarCard";
+import CarCard from "../extra/CarCard";
 
 import Title from "../extra/Title";
 

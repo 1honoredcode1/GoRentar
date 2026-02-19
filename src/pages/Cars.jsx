@@ -4,7 +4,7 @@ import { assets, dummyCarData } from "../assets/assets";
 
 import Title from "../components/extra/Title";
 
-import CarCard from "../components/home/CarCard";
+import CarCard from "../components/extra/CarCard";
 
 const Cars = () => {
   const [input, setInput] = useState("");
