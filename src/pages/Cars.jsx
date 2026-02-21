@@ -1,13 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
-import { assets, dummyCarData } from "../assets/assets";
+import { assets } from "../assets/assets";
 
 import Title from "../components/extra/Title";
-
 import CarCard from "../components/extra/CarCard";
+
+import { useAppContext } from "../context/AppContext";
 
 const Cars = () => {
   const [input, setInput] = useState("");
+  const [filteredCars, setFilteredCars] = useState([]);
+
+  const { cars, axios } = useAppContext();
+
+  const [searchParams] = useSearchParams();
+  const pickupLocation = searchParams.get("PickupLocation");
+  const pickupDate = searchParams.get("PickupDate");
+  const returnDate = searchParams.get("ReturnDate");
+
+  const isSearchData = pickupLocation && pickupDate && returnDate;
+
+  const applyFilter = () => {
+    if (!cars?.length) return;
+
+    if (input.trim() === "") {
+      setFilteredCars(cars);
+      return;
+    }
+
+    const query = input.toLowerCase();
+
+    const filtered = cars.filter((car) => {
+      return (
+        car.brand?.toLowerCase().includes(query) ||
+        car.model?.toLowerCase().includes(query) ||
+        car.category?.toLowerCase().includes(query) ||
+        car.transmission?.toLowerCase().includes(query)
+      );
+    });
+
+    setFilteredCars(filtered);
+  };
+
+  const searchCaraAvailability = async () => {
+    const { data } = await axios.post("/api/bookings/check-availability", {
+      location: pickupLocation,
+      pickupDate,
+      returnDate,
+    });
+    if (data.success) {
+      setFilteredCars(data.availableCars);
+    }
+    if (data.availableCars.length === 0) {
+      toast("No cars available for the selected dates and location");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (isSearchData) {
+      searchCaraAvailability();
+    }
+  }, []);
+
+  useEffect(() => {
+    cars.length > 0 && !isSearchData && applyFilter();
+  }, [input, cars]);
 
   return (
     <div className="">
@@ -23,7 +83,7 @@ const Cars = () => {
             className="w-4.5 h-4.5 mr-2"
           />
           <input
-            onClick={(e) => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
             value={input}
             type="text "
             placeholder="Search by make, model or features"
@@ -38,10 +98,10 @@ const Cars = () => {
       </div>
       <div className="px-6 md:px-16 lg:px-24 xl:px-32 mt-10">
         <p className="text-gray-500 xl:px-20 max-w-7xl mx-auto">
-          Showing {dummyCarData.length} cars{" "}
+          Showing {filteredCars.length} cars{" "}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4 xl:px-20 max-w-7xl mx-auto">
-          {dummyCarData.map((car, index) => (
+          {filteredCars.map((car, index) => (
             <div key={index}>
               <CarCard car={car} />
             </div>

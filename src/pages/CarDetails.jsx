@@ -1,11 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { assets, dummyCarData } from "../assets/assets";
+import { assets } from "../assets/assets";
+
 import Loading from "../components/extra/Loading";
 
+import { useAppContext } from "../context/AppContext";
+
 const CarDetails = () => {
-  const currency = import.meta.env.VITE_CURRENCY;
+  const {
+    currency,
+    axios,
+    cars,
+    pickupDate,
+    setPickupDate,
+    returnDate,
+    setReturnDate,
+  } = useAppContext();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,8 +28,8 @@ const CarDetails = () => {
   };
 
   useEffect(() => {
-    setCar(dummyCarData.find((car) => car._id === id));
-  }, [id]);
+    setCar(cars.find((car) => car._id === id));
+  }, [id, cars]);
 
   return car ? (
     <div className="px-6 md:px-16 lg:px-24 xl:px-32 mt-16">
