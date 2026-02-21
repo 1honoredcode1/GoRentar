@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -16,15 +16,18 @@ import ManageCars from "./pages/admin/ManageCars";
 import ManageBookings from "./pages/admin/ManageBookings";
 import Login from "./components/Login";
 
+import { useAppContext } from "./context/AppContext";
+
 const App = () => {
-  const [showLogin, setShowLogin] = useState(false);
+  const { showLogin } = useAppContext();
 
   const isAdminPath = useLocation().pathname.startsWith("/admin");
 
   return (
     <>
-      {showLogin && <Login setShowLogin={setShowLogin} />}
-      {!isAdminPath && <Navbar setShowLogin={setShowLogin} />}
+      <Toaster />
+      {showLogin && <Login />}
+      {!isAdminPath && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/car-details/:id" element={<CarDetails />} />

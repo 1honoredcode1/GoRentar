@@ -1,13 +1,32 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import { assets, menuLinks } from "../assets/assets";
 
-const Navbar = ({ setShowLogin }) => {
+import { useAppContext } from "../context/AppContext";
+
+const Navbar = () => {
+  const { setShowLogin, user, logout, isAdmin, axios, setIsAdmin } =
+    useAppContext();
   const location = useLocation();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
+
+  const changeRole = async () => {
+    try {
+      const { data } = await axios.post("/api/admin/change-role");
+      if (data.success) {
+        setIsAdmin(true);
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <div
@@ -41,14 +60,19 @@ const Navbar = ({ setShowLogin }) => {
           <img src={assets.search_icon} alt="search-icon" />
         </div>
         <div className="flex max-sm:flex-col items-start sm:items-center gap-6">
-          <button className="cursor-pointer" onClick={() => navigate("/admin")}>
-            Dashboard
+          <button
+            className="cursor-pointer"
+            onClick={() => (isAdmin ? navigate("/admin") : changeRole())}
+          >
+            {isAdmin ? "Dashboard" : "List cars"}
           </button>
           <button
-            onClick={() => setShowLogin(true)}
+            onClick={() => {
+              user ? logout() : setShowLogin(true);
+            }}
             className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition-all text-white rounded-lg"
           >
-            Log In
+            {user ? "Logout" : "Login"}
           </button>
         </div>
       </div>
