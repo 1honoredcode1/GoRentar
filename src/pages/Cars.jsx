@@ -45,20 +45,28 @@ const Cars = () => {
   };
 
   const searchCaraAvailability = async () => {
-    const { data } = await axios.post("/api/bookings/check-availability", {
-      location: pickupLocation,
-      pickupDate,
-      returnDate,
-    });
-    if (data.success) {
-      setFilteredCars(data.availableCars);
-    }
-    if (data.availableCars.length === 0) {
-      toast("No cars available for the selected dates and location");
-    }
-    return null;
-  };
+    try {
+      const { data } = await axios.post("/api/bookings/check-availability", {
+        location: pickupLocation,
+        pickupDate,
+        returnDate,
+      });
 
+      if (!data.success) {
+        toast.error(data.message || "Failed to check availability");
+        return;
+      }
+
+      const availableCars = data.availableCars || [];
+      setFilteredCars(availableCars);
+
+      if (availableCars.length === 0) {
+        toast("No cars available for the selected dates and location");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  };
   useEffect(() => {
     if (isSearchData) {
       searchCaraAvailability();
